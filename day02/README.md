@@ -5,8 +5,8 @@
 I looked at the [list of students](https://github.com/Code-Maven/wis-python-course-2026-10/blob/main/STUDENTS.md)
 and picked two whose site repositories had no issues yet:
 
-- **Delfina Papinutti**: <https://delfip.github.io>. Issue: ISSUE_LINK_1
-- **Ehud Elfer**: <https://ehudelfer.github.io>. Issue: ISSUE_LINK_2
+- **Delfina Papinutti**: <https://delfip.github.io>. Issue: https://github.com/delfip/delfip.github.io/issues/2
+- **Ehud Elfer**: <https://ehudelfer.github.io>. Issue: https://github.com/ehudelfer/ehudelfer.github.io/issues/2
 
 I read each site and opened an issue on its repository with praise and
 suggestions for improvement. Then I followed the discussion and responded to
