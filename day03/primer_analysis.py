@@ -12,6 +12,10 @@ COMPLEMENT = {"A": "T", "T": "A", "G": "C", "C": "G"}
 # Average mass (g/mol) of each nucleotide inside a single-stranded DNA chain.
 NUCLEOTIDE_MASS = {"A": 313.21, "T": 304.20, "G": 329.21, "C": 289.18}
 
+# Ranges usually recommended for PCR primers.
+GC_RANGE = (40, 60)
+TM_RANGE = (50, 65)
+
 
 def read_fasta(path):
     """Return a list of (name, sequence) pairs from a FASTA file."""
@@ -72,6 +76,18 @@ def reverse_complement(seq):
     return "".join(COMPLEMENT[base] for base in reversed(seq))
 
 
+def pcr_warnings(seq):
+    """Return a list of warnings for values outside the recommended PCR ranges."""
+    warnings = []
+    gc = gc_content(seq)
+    tm = melting_temperature(seq)
+    if not GC_RANGE[0] <= gc <= GC_RANGE[1]:
+        warnings.append(f"GC {gc:.1f}% outside {GC_RANGE[0]}-{GC_RANGE[1]}%")
+    if not TM_RANGE[0] <= tm <= TM_RANGE[1]:
+        warnings.append(f"Tm {tm:.1f}C outside {TM_RANGE[0]}-{TM_RANGE[1]}C")
+    return warnings
+
+
 def analyze(name, seq):
     """Compute all properties of one primer and return them as a dict."""
     return {
@@ -82,6 +98,7 @@ def analyze(name, seq):
         "tm_celsius": round(melting_temperature(seq), 1),
         "mw_g_per_mol": round(molecular_weight(seq), 1),
         "reverse_complement": reverse_complement(seq),
+        "warnings": "; ".join(pcr_warnings(seq)),
     }
 
 
@@ -100,7 +117,7 @@ def main():
     print(f"{'name':<20}{'len':>5}{'GC%':>7}{'Tm(C)':>8}{'MW':>10}")
     for r in results:
         print(f"{r['name']:<20}{r['length']:>5}{r['gc_percent']:>7}"
-              f"{r['tm_celsius']:>8}{r['mw_g_per_mol']:>10}")
+              f"{r['tm_celsius']:>8}{r['mw_g_per_mol']:>10}  {r['warnings']}")
     print(f"\nSaved {len(results)} results to {out_path}")
 
 
