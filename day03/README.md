@@ -89,11 +89,16 @@ I worked with an AI coding assistant (Claude). My prompts were:
    The assistant added `pcr_warnings()` and a `warnings` column in the CSV.
 3. *"Add tests for each function, including a sequence with invalid letters."*
    The assistant wrote `test_primer_analysis.py` and ran it; all 20 tests pass.
+   I sent this request two more times, with slightly different wording. The
+   tests already existed, so the assistant only re-ran them.
+4. *"Update the README with the new prompts, then commit and push."*
 
 ## Git steps
 
 1. Created a branch `day03` (`git switch -c day03`).
 2. Added `day03/primer_analysis.py`, `day03/data/primers.fasta`,
-   `day03/data/results.csv` and this README.
-3. Committed and pushed to GitHub.
-4. Opened an issue on the course repository with a link to this folder.
+   `day03/data/results.csv` and this README, and committed them.
+3. Merged `day03` into `main` and pushed to GitHub.
+4. Committed the PCR warnings, the tests and the README updates on `day03`,
+   then merged into `main` and pushed again.
+5. Opened an issue on the course repository with a link to this folder.
