@@ -57,6 +57,24 @@ Many of the standard primers get a Tm warning. The reason is that the simple
 GC-based formula usually gives lower values than the nearest-neighbor method
 that oligo suppliers use, so the warnings are a rough first check.
 
+## Tests
+
+[`test_primer_analysis.py`](test_primer_analysis.py) has 20 tests using
+Python's built-in `unittest` module. Every function is tested with known
+values (for example, the M13 forward primer's published molecular weight)
+and with an invalid sequence (`ATGXN`), which must raise a `ValueError`.
+
+```
+cd day03
+python -m unittest -v
+```
+
+```
+Ran 20 tests in 0.003s
+
+OK
+```
+
 ## Prompts I used
 
 I worked with an AI coding assistant (Claude). My prompts were:
@@ -69,6 +87,8 @@ I worked with an AI coding assistant (Claude). My prompts were:
 2. *"Add a check that warns when a primer's GC content or melting temperature
    is outside the range usually recommended for PCR."*
    The assistant added `pcr_warnings()` and a `warnings` column in the CSV.
+3. *"Add tests for each function, including a sequence with invalid letters."*
+   The assistant wrote `test_primer_analysis.py` and ran it; all 20 tests pass.
 
 ## Git steps
 
