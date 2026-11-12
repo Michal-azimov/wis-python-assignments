@@ -10,5 +10,7 @@ Each assignment is in its own folder, named after the lecture day:
 |--------|-------|
 | [day01](day01/) | Creating a personal web site with GitHub Pages |
 | [day02](day02/) | GitHub issues, installing Python, and a first "Hello World" program |
+| [day03](day03/) | DNA primer analysis program with tests |
+| [day04](day04/) | Flask web interface for the primer analysis program |
 
 Author: Michal Azimov ([personal web site](https://michal-azimov.github.io))

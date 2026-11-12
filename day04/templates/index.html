@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Primer Analysis</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main>
+  <h1>DNA Primer Analysis</h1>
+  <p class="intro">
+    Paste primers in FASTA format, or one plain sequence per line, or upload a
+    FASTA file. For each primer you get the GC content, melting temperature (Tm),
+    molecular weight and reverse complement. Primers with GC outside
+    {{ gc_range[0] }}–{{ gc_range[1] }}% or Tm outside
+    {{ tm_range[0] }}–{{ tm_range[1] }} °C are flagged.
+  </p>
+
+  <form method="post" action="{{ url_for('index') }}" enctype="multipart/form-data">
+    <label for="sequences">Primers</label>
+    <textarea id="sequences" name="sequences" rows="8" spellcheck="false"
+      placeholder=">my_primer&#10;GTAAAACGACGGCCAGT">{{ text }}</textarea>
+
+    <label for="fasta_file">…or upload a FASTA file</label>
+    <input type="file" id="fasta_file" name="fasta_file" accept=".fasta,.fa,.fna,.txt">
+
+    <div class="buttons">
+      <button type="submit">Analyze</button>
+      <a class="button secondary" href="{{ url_for('example') }}">Load example primers</a>
+      <a class="button secondary" href="{{ url_for('index') }}">Clear</a>
+    </div>
+  </form>
+
+  {% if errors %}
+  <div class="errors">
+    <strong>Some primers could not be analyzed:</strong>
+    <ul>
+      {% for error in errors %}<li>{{ error }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if results %}
+  <h2>Results ({{ results|length }} primer{{ '' if results|length == 1 else 's' }})</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th><th>Sequence (5'→3')</th><th>Length</th><th>GC %</th>
+          <th>Tm (°C)</th><th>MW (g/mol)</th><th>Reverse complement</th><th>Warnings</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in results %}
+        <tr class="{{ 'warn' if r.warnings else 'ok' }}">
+          <td>{{ r.name }}</td>
+          <td class="seq">{{ r.sequence }}</td>
+          <td class="num">{{ r.length }}</td>
+          <td class="num">{{ r.gc_percent }}</td>
+          <td class="num">{{ r.tm_celsius }}</td>
+          <td class="num">{{ r.mw_g_per_mol }}</td>
+          <td class="seq">{{ r.reverse_complement }}</td>
+          <td>{{ r.warnings or '✓ OK' }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <form method="post" action="{{ url_for('download') }}">
+    <input type="hidden" name="sequences" value="{{ text }}">
+    <button type="submit" class="secondary">Download results as CSV</button>
+  </form>
+  {% endif %}
+
+  <footer>
+    Day 04 assignment – web interface to the
+    <code>primer_analysis.py</code> program from day 03.
+  </footer>
+</main>
+</body>
+</html>
