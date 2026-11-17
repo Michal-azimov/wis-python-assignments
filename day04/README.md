@@ -15,8 +15,9 @@ that uses the same "business logic" from
 | [`static/style.css`](static/style.css) | Styling for the page |
 | [`test_primer_analysis.py`](test_primer_analysis.py) | Tests for the business logic (from day 03) |
 | [`test_app.py`](test_app.py) | Tests for the web application |
+| [`test_business_logic.py`](test_business_logic.py) | More pytest tests for the business logic (day 05 assignment) |
 | [`data/primers.fasta`](data/primers.fasta) | Example primers |
-| [`requirements.txt`](requirements.txt) | Python packages needed (Flask) |
+| [`requirements.txt`](requirements.txt) | Python packages needed (Flask, pytest) |
 
 ## What the web app does
 
@@ -113,3 +114,82 @@ I worked with an AI coding assistant (Claude). My prompts were:
 1. Created a branch `day04` (`git switch -c day04`).
 2. Added the `day04` folder and the updated root `README.md`, and committed them.
 3. Merged `day04` into `main` and pushed to GitHub.
+
+## Day 05 – More tests for the business logic
+
+The Day 05 assignment was to write tests for the "business logic" of a
+previous application. I added [`test_business_logic.py`](test_business_logic.py),
+written with [pytest](https://docs.pytest.org/) like the lecturer's
+`test_bmi_pytest.py` example. It has 51 tests that cover what the day 03
+tests did not:
+
+- **Edge cases:** empty sequences, RNA and ambiguous bases (`U`, `N`), lower
+  case, spaces and newlines inside a sequence, an empty FASTA file, a header
+  with no sequence, a missing file.
+- **Boundary values:** the Tm formula switches from the Wallace rule at 13
+  bases to the GC formula at 14 bases; GC content exactly at 40% and 60% is
+  OK, but 35% and 65% get a warning.
+- **Properties that must always hold:** the reverse complement has the same
+  length and GC content as the primer, a palindrome (the EcoRI site `GAATTC`)
+  is its own reverse complement, the molecular weight does not depend on the
+  order of the bases, and more G/C gives a higher Tm.
+- **The command-line program (`main()`):** it writes the expected CSV (the
+  same as [`data/results.csv`](data/results.csv)), shows the usage message
+  for wrong arguments, skips invalid primers, and stops with a message when
+  no primer is valid. These tests use pytest's `tmp_path`, `monkeypatch` and
+  `capsys` fixtures.
+- `@pytest.mark.parametrize` runs one test with many inputs, so every
+  function is checked with an empty sequence.
+
+### Bugs the tests found
+
+I wrote the tests first and 8 of them failed. They showed 4 bugs, which I
+then fixed in [`primer_analysis.py`](primer_analysis.py):
+
+| Bug | Before | After |
+|---|---|---|
+| Empty sequence | `gc_content("")` crashed with `ZeroDivisionError`; `molecular_weight("")` returned −61.96 | `validate()` raises `ValueError("Empty sequence")` |
+| Space inside a FASTA sequence line (`AC GT`) | The space stayed, so the primer was rejected | `parse_fasta()` removes all whitespace |
+| One invalid primer in the FASTA file | The command-line program crashed with a traceback | It prints `Skipping <name>: <reason>` and analyzes the others |
+| FASTA file with no valid primers | Crashed with `IndexError` | Stops with `No valid primers found in <file>` |
+
+The web app already handled empty sequences itself; that check is now done
+by the business logic, so I removed it from `app.py`.
+
+### Running all the tests
+
+```
+cd day04
+pip install -r requirements.txt
+python -m pytest -v
+```
+
+```
+80 passed in 0.22s
+```
+
+pytest also runs the older `unittest` tests, so this one command runs all 80
+tests: 51 new ones, 20 from day 03 and 9 for the web app.
+`python -m unittest -v` still runs the 29 older tests.
+
+I also checked that the command-line program still writes the same
+`data/results.csv`, that the web page still shows the example primers, and
+that the `day03` folder and its tests are unchanged.
+
+### Prompts I used (day 05)
+
+1. *"I have another assignment. Can you do it for me?"*, with a screenshot of
+   the Day 05 assignment.
+
+   The assistant read the course repository, saw that the lecturer used
+   pytest, wrote `test_business_logic.py`, ran it to find the bugs above,
+   fixed them, ran all the tests and both programs, and updated this README.
+2. *"Yes, all three"* (commit, push and open the Day 05 issue).
+
+### Git steps (day 05)
+
+1. Created a branch `day05` (`git switch -c day05`).
+2. Committed the new tests, the bug fixes and the README updates.
+3. Merged `day05` into `main` and pushed to GitHub.
+4. Opened a "Day 05 by Michal Azimov" issue on the course repository with a
+   link to this folder.

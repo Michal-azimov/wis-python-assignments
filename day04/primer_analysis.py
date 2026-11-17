@@ -32,7 +32,7 @@ def parse_fasta(lines):
             name = line[1:].strip()
             parts = []
         else:
-            parts.append(line.upper())
+            parts.append("".join(line.split()).upper())
     if name is not None:
         records.append((name, "".join(parts)))
     return records
@@ -45,6 +45,8 @@ def read_fasta(path):
 
 
 def validate(seq):
+    if not seq:
+        raise ValueError("Empty sequence")
     bad = set(seq) - set(COMPLEMENT)
     if bad:
         raise ValueError(f"Invalid bases in sequence: {''.join(sorted(bad))}")
@@ -112,7 +114,14 @@ def main():
         sys.exit(__doc__)
     fasta_path, out_path = sys.argv[1], sys.argv[2]
 
-    results = [analyze(name, seq) for name, seq in read_fasta(fasta_path)]
+    results = []
+    for name, seq in read_fasta(fasta_path):
+        try:
+            results.append(analyze(name, seq))
+        except ValueError as err:
+            print(f"Skipping {name}: {err}", file=sys.stderr)
+    if not results:
+        sys.exit(f"No valid primers found in {fasta_path}")
 
     with open(out_path, "w", newline="") as fh:
         writer = csv.DictWriter(fh, fieldnames=results[0].keys())

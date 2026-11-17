@@ -37,8 +37,6 @@ def analyze_text(text):
     results, errors = [], []
     for name, seq in records_from_text(text):
         try:
-            if not seq:
-                raise ValueError("Empty sequence")
             results.append(analyze(name, seq))
         except ValueError as err:
             errors.append(f"{name}: {err}")
