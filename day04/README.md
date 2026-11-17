@@ -102,12 +102,14 @@ I also checked by hand:
 
 I worked with an AI coding assistant (Claude). My prompts were:
 
-1. *"Do this assignment pls"*, with a screenshot of the Day 04 assignment.
-
-   From that prompt the assistant copied day03 to day04, wrote the Flask app,
-   the HTML template, the CSS and the tests, ran both the old and the new
-   programs, checked the page in a browser, and wrote this README.
-2. *"Yes, commit and push"*
+1. *"Copy `day03` to `day04`. In `day04`, write a Flask web app that uses the
+   functions in `primer_analysis.py`. The page should accept pasted or
+   uploaded FASTA and show a results table, with a CSV download and an error
+   message for invalid sequences."*
+2. *"Add tests for the web app, then run the old and new tests and both
+   programs to check that everything works. Also check the page in a browser."*
+3. *"Update the README, commit on a `day04` branch, merge into `main`, push,
+   and open a 'Day 04 by Michal Azimov' issue on the course repository."*
 
 ## Git steps
 
