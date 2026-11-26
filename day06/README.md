@@ -138,7 +138,10 @@ in-silico PCR only finds exact matches.
 Part of the assignment was to run two other students' day 05 projects and
 open issues on their repositories. Issues I opened:
 
-- *(links added after the issues were opened)*
+- [sapirg2079/Assignments#1](https://github.com/sapirg2079/Assignments/issues/1):
+  how to install the packages and run the day04 web app.
+- [kseniabrt/2026_programming_in_python_using_AI_course_assignments#1](https://github.com/kseniabrt/2026_programming_in_python_using_AI_course_assignments/issues/1):
+  which tests belong to Day05, and an idea to avoid the Windows path-length limit.
 
 ## Prompts I used
 
@@ -150,7 +153,11 @@ I worked with an AI coding assistant (Claude). My prompts were:
    The assistant copied my day 05 solution to `day06`, suggested and wrote the
    primer pair checker (`primer_pairs.py`), the new web page and the tests,
    ran all the tests and both command-line programs, checked the page in a
-   browser, and wrote this README.
+   browser, and wrote this README. It also picked two students whose
+   repositories had no issues yet, read their day 05 code and drafted the issues.
+2. *"Write only 2 points to Sapir, not 4. The instructions said to write
+   comments about the app, not about the issues in GitHub."*
+3. *"Yes, post it"* (post the issues, push, and open the day06 issue).
 
 ## Git steps
 
