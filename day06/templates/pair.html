@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Primer Pair Check</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<main>
+  <nav>
+    <a href="{{ url_for('index') }}">Single primers</a>
+    <a class="current" href="{{ url_for('pair') }}">Primer pair &amp; PCR</a>
+  </nav>
+  <h1>Primer Pair Check &amp; In-silico PCR</h1>
+  <p class="intro">
+    Enter a forward and a reverse primer (5'→3'). The page checks whether they
+    can stick to themselves or to each other at the 3' end (primer-dimers),
+    whether they fold into hairpins, and whether their melting temperatures
+    match. If you also paste a template DNA, it finds where the primers bind
+    and shows the PCR product.
+  </p>
+
+  <form method="post" action="{{ url_for('pair') }}">
+    <label for="forward">Forward primer</label>
+    <input type="text" id="forward" name="forward" value="{{ forward }}"
+      spellcheck="false" placeholder="GTAAAACGACGGCCAGT">
+
+    <label for="reverse">Reverse primer</label>
+    <input type="text" id="reverse" name="reverse" value="{{ reverse }}"
+      spellcheck="false" placeholder="CAGGAAACAGCTATGAC">
+
+    <label for="template">Template DNA (optional, FASTA or plain sequence)</label>
+    <textarea id="template" name="template" rows="5" spellcheck="false">{{ template_text }}</textarea>
+
+    <div class="buttons">
+      <button type="submit">Check pair</button>
+      <a class="button secondary" href="{{ url_for('pair_example') }}">Load example (M13 primers on pUC19)</a>
+      <a class="button secondary" href="{{ url_for('pair') }}">Clear</a>
+    </div>
+  </form>
+
+  {% if error %}
+  <div class="errors"><strong>Error:</strong> {{ error }}</div>
+  {% endif %}
+
+  {% if result %}
+  <h2>Primers</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th></th><th>Sequence (5'→3')</th><th>Length</th><th>GC %</th><th>Tm (°C)</th>
+          <th>3' self-dimer (bp)</th><th>Hairpin stem (bp)</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name in ['forward', 'reverse'] %}
+        {% set p = result[name] %}
+        <tr>
+          <td>{{ name|capitalize }}</td>
+          <td class="seq">{{ p.sequence }}</td>
+          <td class="num">{{ p.length }}</td>
+          <td class="num">{{ p.gc_percent }}</td>
+          <td class="num">{{ p.tm_celsius }}</td>
+          <td class="num">{{ result[name ~ '_self_dimer'] }}</td>
+          <td class="num">{{ result[name ~ '_hairpin'] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  <p>
+    Tm difference: <strong>{{ result.tm_difference }} °C</strong> ·
+    3' cross-dimer between the primers: <strong>{{ result.cross_dimer }} bp</strong>
+  </p>
+
+  {% if result.product %}
+  <h2>PCR product: {{ result.product.length }} bp</h2>
+  <p>
+    Positions {{ result.product.start }}–{{ result.product.end }} on the
+    {{ result.product.strand }} strand of the template.
+    Primer binding sites are highlighted.
+  </p>
+  {% set fl = result.forward.length %}
+  {% set rl = result.reverse.length %}
+  {% set seq = result.product.product %}
+  <div class="product seq"><mark>{{ seq[:fl] }}</mark>{{ seq[fl:seq|length - rl] }}<mark>{{ seq[seq|length - rl:] }}</mark></div>
+  {% endif %}
+
+  <h2>Verdict</h2>
+  {% if result.warnings %}
+  <div class="errors">
+    <ul>
+      {% for warning in result.warnings %}<li>{{ warning }}</li>{% endfor %}
+    </ul>
+  </div>
+  {% else %}
+  <div class="good">✓ The primer pair looks good.</div>
+  {% endif %}
+  {% endif %}
+
+  <footer>
+    Day 06 assignment – primer pair checker added to the day 04/05 web app.
+  </footer>
+</main>
+</body>
+</html>

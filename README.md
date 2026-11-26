@@ -12,5 +12,6 @@ Each assignment is in its own folder, named after the lecture day:
 | [day02](day02/) | GitHub issues, installing Python, and a first "Hello World" program |
 | [day03](day03/) | DNA primer analysis program with tests |
 | [day04](day04/) | Flask web interface for the primer analysis program, plus pytest tests for its business logic (day 05 assignment) |
+| [day06](day06/) | Primer pair checker and in-silico PCR, added to the day 05 web app |
 
 Author: Michal Azimov ([personal web site](https://michal-azimov.github.io))
